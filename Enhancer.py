@@ -12,20 +12,21 @@ class Enhancer:
     
     def get_ultra_sharp_mask(self, patch_size, fade_width=32):
         """
-        Creates a mask that is 1.0 in the center and drops off sharply at edges.
-        The cubic power (pow 3) ensures the center 'truth' dominates, fixing blur.
+        Creates a 2D Cosine window mask for seamless blending.
+        This eliminates the grid lines by ensuring a smooth transition.
         """
-        mask = torch.ones((1, patch_size, patch_size), dtype=torch.float32)
-        ramp = torch.linspace(0, 1, fade_width)
-        # Cubic ramp for a much sharper 'sharpness' zone
-        ramp = torch.pow(ramp, 3)
-        for i in range(fade_width):
-            val = ramp[i]
-            mask[:, i, :] *= val           # Top
-            mask[:, -(i+1), :] *= val      # Bottom
-            mask[:, :, i] *= val           # Left
-            mask[:, :, -(i+1)] *= val      # Right
-        return mask
+        # 1D mask banayein (Cosine taper)
+        mask1d = torch.ones(patch_size)
+        # Cosine ramp for edges
+        ramp = 0.5 * (1 - torch.cos(torch.linspace(0, np.pi, fade_width)))
+        
+        mask1d[:fade_width] = ramp
+        mask1d[-fade_width:] = torch.flip(ramp, [0])
+        
+        # 1D ko 2D mask mein convert karein
+        mask2d = mask1d.view(1, -1) * mask1d.view(-1, 1)
+        # Channel dimension add karein (1, H, W)
+        return mask2d.unsqueeze(0)
     
     def combine_tensor_patches(self, patch_tensors, coords, original_size, padded_size, patch_size):
         h, w = original_size
