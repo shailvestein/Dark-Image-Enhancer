@@ -8,6 +8,7 @@ from PIL import Image
 from Models import load_weights
 from Enhancer import Enhancer
 import torch
+import requests
 
 MAX_WIDTH, MAX_HEIGHT = 1920, 1080
 MAX_FILE_SIZE = 10 * MAX_WIDTH * MAX_HEIGHT
@@ -24,7 +25,10 @@ def trigger_reset():
     st.rerun()
 
 # --- 3. Show sample ---
-st.image(Image.open('./data/ropeway_enh_img.jpg'), caption='')
+GITHUB_IMAGE_URL = "https://raw.githubusercontent.com/your_username/your_repo/main/data/ropeway_enh_img.jpg"
+response = requests.get(GITHUB_IMAGE_URL)
+display_image = Image.open(io.BytesIO(response.content))
+st.image(display_image, caption='')
 
 # --- 4. MODEL LOADING ---
 @st.cache_resource
