@@ -32,7 +32,7 @@ class Enhancer:
         weight_sum = torch.zeros((1, nh, nw), dtype=torch.float32)
         
         # 64 pixel ka smooth transition boundary
-        mask = self.get_ultra_sharp_mask(patch_size, fade_width=64)
+        mask = self.get_ultra_sharp_mask(patch_size, fade_width=256)
         
         for idx, (i, j) in enumerate(coords):
             patch = patch_tensors[idx].float()
