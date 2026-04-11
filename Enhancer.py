@@ -51,7 +51,7 @@ class Enhancer:
         start_time = time.time()
         img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         patch_size = 256
-        stride = 128  
+        stride = 192  
         h, w, _ = img_rgb.shape
         
         pad_h = (patch_size - h % stride) % stride + (patch_size - stride)
