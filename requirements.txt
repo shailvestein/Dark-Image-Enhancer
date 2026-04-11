@@ -20,3 +20,5 @@ lpips==0.1.4
 # To download models from GDrive
 gdown
 einops
+
+requests
