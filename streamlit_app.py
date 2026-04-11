@@ -23,7 +23,10 @@ def trigger_reset():
     st.session_state.reset_counter += 1
     st.rerun()
 
-# --- 3. MODEL LOADING ---
+# --- 3. Show sample ---
+st.image(Image.open('./data/ropeway_enh_img.jpg'), caption='')
+
+# --- 4. MODEL LOADING ---
 @st.cache_resource
 def get_enhancer():
     model_fusion = load_weights()
@@ -32,7 +35,7 @@ def get_enhancer():
 
 enhancer = get_enhancer()
 
-# --- 4. SIMPLE DOWNLOAD HELPER ---
+# --- 5. SIMPLE DOWNLOAD HELPER ---
 def get_image_bytes(image_np):
     """Directly converts uint8 numpy array to bytes without extra processing."""
     img = Image.fromarray(image_np)
@@ -49,10 +52,10 @@ def resize_to_2k(img, target_width=MAX_WIDTH):
         img = cv2.resize(img, (new_width, new_height), interpolation=cv2.INTER_AREA)
     return img
     
-# --- 5. UI HEADER ---
+# --- 6. UI HEADER ---
 st.markdown("<h1 style='text-align: center; color: #00d4ff;'>📸 DeepSense AI Light Restoration</h1>", unsafe_allow_html=True)
 
-# --- 6. UPLOADER ---
+# --- 7. UPLOADER ---
 uploader_key = f"uploader_{st.session_state.reset_counter}"
 uploaded_file = st.file_uploader("Upload Low-light Image", type=["jpg", "jpeg", "png"], key=uploader_key)
 enhc_img = None
@@ -114,7 +117,7 @@ with c2:
     # else:
     #     st.info("👋 Welcome! Please upload a photo to start.")
 
-# --- 7. FOOTER (With Clickable Email) ---
+# --- 8. FOOTER (With Clickable Email) ---
 st.markdown("<br><br>", unsafe_allow_html=True)
 st.markdown(
     """
