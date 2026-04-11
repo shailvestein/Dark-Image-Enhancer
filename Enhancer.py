@@ -11,7 +11,7 @@ class Enhancer:
         self.model = model.to(self.device)
         self.batch_size = batch_size
     
-    def get_ultra_sharp_mask(self, patch_size, fade_width=64): # Increased fade_width
+    def get_ultra_sharp_mask(self, patch_size, fade_width=256): # Increased fade_width
         """
         Creates a very smooth 2D Cosine window. 
         Higher fade_width (64) ensures no sharp edges.
