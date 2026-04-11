@@ -77,7 +77,6 @@ if uploaded_file is not None:
         # --- PROCESSING ---
         with st.status("🚀 AI Engine is working...", expanded=True) as status:
             enhc_img, p_time = enhancer.enhance_image(img_input)
-            enhc_img = torch.clamp(enhc_img, 0, 1)
             status.update(label=f"✨ Magic Done in {p_time:.2f}s!", state="complete", expanded=False)
     
         # --- DISPLAY ---
