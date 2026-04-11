@@ -1,0 +1,22 @@
+# Core Machine Learning (Stable & Compatible)
+torch==2.2.1
+torchvision==0.17.1
+numpy==1.26.4
+
+# UI & Comparison Tools
+streamlit==1.32.0
+streamlit-image-comparison==0.0.4
+
+# Computer Vision & Image Processing
+# Use headless to avoid libGL errors in Linux/Cloud environments
+opencv-python-headless==4.9.0.80
+Pillow==10.2.0
+kornia==0.7.2
+
+# Specialized LLIE Metrics & Losses
+piq==0.8.0
+lpips==0.1.4
+
+# To download models from GDrive
+gdown
+einops
