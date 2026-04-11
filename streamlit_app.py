@@ -5,7 +5,7 @@ import time
 import io
 import gc
 from PIL import Image
-from models import load_weights
+from Models import load_weights
 from Enhancer import Enhancer
 import torch
 
