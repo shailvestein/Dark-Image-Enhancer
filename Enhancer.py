@@ -10,7 +10,7 @@ class Enhancer:
         self.model = model.to(self.device)
         self.batch_size = batch_size
     
-    def get_ultra_sharp_mask(self, patch_size, fade_width=32):
+    def get_ultra_sharp_mask(self, patch_size, fade_width=64):
         """
         Creates a 2D Cosine window mask for seamless blending.
         This eliminates the grid lines/seams.
