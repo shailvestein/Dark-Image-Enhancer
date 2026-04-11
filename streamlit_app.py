@@ -14,7 +14,7 @@ MAX_WIDTH, MAX_HEIGHT = 1920, 1080
 MAX_FILE_SIZE = 10 * MAX_WIDTH * MAX_HEIGHT
 
 # --- 1. SET PAGE CONFIG ---
-st.set_page_config(layout="wide", page_title="DeepSense AI Lab", page_icon="✨")
+st.set_page_config(layout="wide", page_title="AI image light restoration Lab", page_icon="✨")
 
 # --- 2. SESSION STATE FOR RESET ---
 if 'reset_counter' not in st.session_state:
@@ -57,7 +57,7 @@ def resize_to_2k(img, target_width=MAX_WIDTH):
     return img
     
 # --- 6. UI HEADER ---
-st.markdown("<h1 style='text-align: center; color: #00d4ff;'>📸 DeepSense AI Light Restoration</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #00d4ff;'>📸 AI Image Light Restoration</h1>", unsafe_allow_html=True)
 
 # --- 7. UPLOADER ---
 uploader_key = f"uploader_{st.session_state.reset_counter}"
