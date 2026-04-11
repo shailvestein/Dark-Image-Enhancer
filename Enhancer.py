@@ -33,7 +33,7 @@ class Enhancer:
         canvas = torch.zeros((3, nh, nw), dtype=torch.float32)
         weight_sum = torch.zeros((1, nh, nw), dtype=torch.float32)
         
-        mask = self.get_ultra_sharp_mask(patch_size, fade_width=16)
+        mask = self.get_ultra_sharp_mask(patch_size, fade_width=32)
         
         for idx, (i, j) in enumerate(coords):
             # Patch format: (C, H, W)
