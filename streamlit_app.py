@@ -25,7 +25,7 @@ def trigger_reset():
     st.rerun()
 
 # --- 3. Show sample ---
-GITHUB_IMAGE_URL = "https://raw.githubusercontent.com/your_username/your_repo/main/data/ropeway_enh_img.jpg"
+GITHUB_IMAGE_URL = "https://raw.githubusercontent.com/shailvestein/Dark-Image-Enhancer/main/data/ropeway-enh-img.jpg"
 response = requests.get(GITHUB_IMAGE_URL)
 display_image = Image.open(io.BytesIO(response.content))
 st.image(display_image, caption='')
