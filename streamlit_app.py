@@ -10,7 +10,7 @@ from Enhancer import Enhancer
 import torch
 import requests
 
-MAX_WIDTH, MAX_HEIGHT = 1920, 1080
+MAX_WIDTH, MAX_HEIGHT = 1280, 720
 MAX_FILE_SIZE = 10 * MAX_WIDTH * MAX_HEIGHT
 
 # --- 1. SET PAGE CONFIG ---
