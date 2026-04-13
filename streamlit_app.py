@@ -57,7 +57,7 @@ def resize_to_2k(img, target_width=MAX_WIDTH):
     return img
     
 # --- 6. UI HEADER ---
-st.markdown("<h1 style='text-align: center; color: #00d4ff;'>📸 AI Image Light Restoration</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #00d4ff;'>📸 AI Image Light Restoration Lab</h1>", unsafe_allow_html=True)
 
 # --- 7. UPLOADER ---
 uploader_key = f"uploader_{st.session_state.reset_counter}"
