@@ -32,7 +32,6 @@ class IlluminationEstimator(nn.Module):
 
         return x_map, x_feat
 
-
 class MultiHeadWindowsAttention(nn.Module):
     def __init__(self, embed_dim, xfeat_ch=32, num_head=8, window_size=8): # xfeat_ch default 32
         super(MultiHeadWindowsAttention, self).__init__()
@@ -43,7 +42,6 @@ class MultiHeadWindowsAttention(nn.Module):
 
         self.cmap = nn.Conv2d(embed_dim, embed_dim, 3, padding=1)
 
-        # FIX: Yahan 128 ki jagah xfeat_ch (32) use hoga
         self.cfeat = nn.Conv2d(xfeat_ch, embed_dim, 3, padding=1)
 
         self.qxmap = nn.Linear(embed_dim, embed_dim)
@@ -80,7 +78,7 @@ class MultiHeadWindowsAttention(nn.Module):
 
         # Window Partitioning
         win_xmap, _, _ = self.window_partition(xmap)
-        win_xfeat, _, _ = self.window_partition(self.cfeat(xfeat)) # Ab 32 -> 128 safely convert hoga
+        win_xfeat, _, _ = self.window_partition(self.cfeat(xfeat)) # 32 -> 128
 
         N = self.ws * self.ws
         B_win = win_xmap.shape[0]
@@ -103,7 +101,6 @@ class MultiHeadWindowsAttention(nn.Module):
         out = (attn @ v_m).permute(0, 2, 1, 3).contiguous().view(B_win, N, self.embed_dims)
         out = self.window_reverse(self.proj(out), H, W)
         return self.cout(out) + identity
-    
 
 class IGAB(nn.Module):
     def __init__(self, in_ch, embed_dim, xfeat_ch=32):
@@ -111,7 +108,6 @@ class IGAB(nn.Module):
         self.proj = nn.Conv2d(in_ch, embed_dim, 1) if in_ch != embed_dim else nn.Identity()
 
         self.norm1 = nn.LayerNorm(embed_dim)
-        # Yahan hum xfeat_ch pass kar rahe hain
         self.attn = MultiHeadWindowsAttention(embed_dim=embed_dim, xfeat_ch=xfeat_ch)
 
         self.norm2 = nn.LayerNorm(embed_dim)
@@ -233,8 +229,8 @@ class RetinexFormer(nn.Module):
         criterion = criterion.to(self.device)
         self.to(self.device)
         epoch = 1
-        iterations = 0
         best_psnr = 0
+        train_losses, val_losses, psnr_scores = [], [], []
         while epoch <= epochs:
             train_loss_, val_loss_, psnr = 0, 0, 0
             for x, y in tqdm(train_loader):
@@ -248,29 +244,30 @@ class RetinexFormer(nn.Module):
                 nn.utils.clip_grad_norm_(self.parameters(), max_norm=5.0)
                 optimizer.step()
                 scheduler.step()
-                iterations += 1
 
-                if iterations%1000 == 0:
-                    vi = 0
-                    for x, y in val_loader:
-                        x, y = x.to(self.device), y.to(self.device)
-                        with torch.no_grad():
-                            enh = self(x)
-                        val_loss = criterion(enh, y)
-                        val_loss_ += val_loss.item()
-                        psnr += self.calculate_psnr(enh, y)
-                        if vi == 10:
-                            break
-                        vi += 1
-                    psnr = psnr/vi
-                    print(f"Epoch: {epoch}/{epochs}, train_loss: {train_loss_/len(train_loader):.4f}, val_loss: {val_loss_/vi:.4f}, PSNR: {psnr} lr_rate: {optimizer.param_groups[0]['lr']}")
+            for x, y in val_loader:
+                x, y = x.to(self.device), y.to(self.device)
+                with torch.no_grad():
+                    enh = self(x)
+                val_loss = criterion(enh, y)
+                val_loss_ += val_loss.item()
+                psnr += self.calculate_psnr(enh, y)
             
-                    if psnr>best_psnr:
-                        best_psnr = psnr
-                        print(f"End of epoch: {epoch}/{epochs} saving model with best PSNR: {best_psnr}\t", end='')
-                        self.save_weights(os.path.join(save_path, model_name))
+            psnr = psnr/len(val_loader)
+            train_loss_ = train_loss_/len(train_loader)
+            val_loss_ = val_loss_/len(val_loader)
+            print(f"Epoch: {epoch}/{epochs}, train_loss: {train_loss:.4f}, val_loss: {val_loss:.4f}, PSNR: {psnr} lr_rate: {optimizer.param_groups[0]['lr']}")
+    
+            if psnr>best_psnr:
+                best_psnr = psnr
+                print(f"End of epoch: {epoch}/{epochs} saving model with best PSNR: {best_psnr}\t", end='')
+                self.save_weights(os.path.join(save_path, model_name))
+                print()
             epoch += 1
-            
+            train_losses.append(train_loss_)
+            val_losses.append(val_loss_)
+            psnr_scores.append(psnr)
+        return train_losses, val_losses, psnr_scores
 
     def predict(self, x):
         self.to(self.device)
@@ -294,7 +291,6 @@ class RetinexFormer(nn.Module):
             return 100
         pixel_max = 1.0
         return 20 * torch.log10(pixel_max / torch.sqrt(mse))
-
 
 
 
