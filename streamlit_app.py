@@ -10,8 +10,8 @@ from Enhancer import Enhancer
 import torch
 import requests
 
-MAX_WIDTH, MAX_HEIGHT = 1280, 720
-MAX_FILE_SIZE = 5 * MAX_WIDTH * MAX_HEIGHT
+MAX_WIDTH, MAX_HEIGHT = 1920, 1080
+MAX_FILE_SIZE = 1 * MAX_WIDTH * MAX_HEIGHT
 
 # --- 1. SET PAGE CONFIG ---
 st.set_page_config(layout="wide", page_title="AI image light restoration Lab", page_icon="✨")
@@ -72,7 +72,7 @@ if uploaded_file is not None:
         # Proceed with processing
         file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
         img_input = cv2.imdecode(file_bytes, 1)
-        img_input = resize_to_2k(img_input)
+        # img_input = resize_to_2k(img_input)
     
         # --- PROCESSING ---
         with st.status("🚀 AI Engine is working...", expanded=True) as status:
