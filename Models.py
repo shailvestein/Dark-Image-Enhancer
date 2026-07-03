@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import gdown
 import os
 import streamlit as st
-import eniops
+import einops
 
 #----------------------------------------------------------------------------------#
 #                    M O D E L         A R C H I T E C T U R E                     #
