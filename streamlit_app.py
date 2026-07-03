@@ -10,6 +10,7 @@ from Enhancer import Enhancer
 import torch
 import requests
 
+device = "cuda" if torch.cuda.is_available() else "cpu"
 MAX_WIDTH, MAX_HEIGHT = 1920, 1080
 MAX_FILE_SIZE = 1 * MAX_WIDTH * MAX_HEIGHT
 
@@ -33,8 +34,9 @@ st.image(display_image, caption='')
 # --- 4. MODEL LOADING ---
 @st.cache_resource
 def get_enhancer():
-    model_fusion = load_weights()
-    enhancer = Enhancer(model_fusion, batch_size=2)
+    model = load_weights()
+    model.to(device)
+    enhancer = Enhancer(model, batch_size=2)
     return enhancer
 
 enhancer = get_enhancer()
