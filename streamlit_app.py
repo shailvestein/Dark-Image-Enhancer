@@ -12,7 +12,7 @@ import requests
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 MAX_WIDTH, MAX_HEIGHT = 1920, 1080
-MAX_FILE_SIZE = 1 * MAX_WIDTH * MAX_HEIGHT
+MAX_FILE_SIZE = 5 * MAX_WIDTH * MAX_HEIGHT
 
 # --- 1. SET PAGE CONFIG ---
 st.set_page_config(layout="wide", page_title="AI image light restoration Lab", page_icon="✨")
