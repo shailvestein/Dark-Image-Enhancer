@@ -17,8 +17,6 @@ kornia==0.7.2
 piq==0.8.0
 lpips==0.1.4
 
-# To download models from GDrive
-gdown
-einops
+einops == 0.8.2
 
 requests
