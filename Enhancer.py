@@ -58,8 +58,8 @@ class Enhancer:
         else:
             img_rgb = img
 
-        patch_size = 128
-        stride = 64 # 50% overlap is crucial
+        patch_size = 512
+        stride = 256 # 50% overlap is crucial
         h, w, _ = img_rgb.shape
         
         # Better padding logic
