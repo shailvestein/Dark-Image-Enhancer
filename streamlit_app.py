@@ -100,8 +100,6 @@ if uploaded_file is not None:
             
         with status_placeholder.status(status_text, expanded=True) as status:
             enhancer = get_enhancer()
-            
-ी
             acquired = False
             while not acquired:
                 acquired = GLOBAL_AI_LOCK.acquire(blocking=False)
