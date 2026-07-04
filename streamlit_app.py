@@ -84,8 +84,8 @@ if uploaded_file is not None:
             else:
                 enhc_img = enhc_img.astype(np.uint8)
 
-        orig_rgb = cv2.cvtColor(img_input, cv2.COLOR_BGR2RGB)
-        enhc_rgb = cv2.cvtColor(enhc_img, cv2.COLOR_BGR2RGB)
+        # orig_rgb = cv2.cvtColor(img_input, cv2.COLOR_BGR2RGB)
+        # enhc_rgb = cv2.cvtColor(enhc_img, cv2.COLOR_BGR2RGB)
         
         image_comparison(
             img1=orig_rgb,
