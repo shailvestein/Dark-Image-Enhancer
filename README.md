@@ -58,20 +58,18 @@ The framework incorporates physical priors based on Retinex Theory paired with d
 ```
 
 ### 4. Loss Formulations
-The network is optimized using a joint loss function to guarantee both structural fidelity and exposure naturalness:
-$$\mathcal{Loss} = \mathcal{L}_{1}
+The network is optimized using a L1 loss function similar to research paper.
 
-📊 Performance Benchmarks & Evaluation
+### 5. Performance Benchmarks & Evaluation
 
-The model has been rigorously evaluated using structural and peak signal performance targets across standard benchmarks and mixed real-world distributions:
+The model has been rigorously evaluated using PSNR (peak-signal-to-noise-ratio):
 ```
-Evaluation Dataset Split                  Target Performance (PSNR)
-LOL (Low-Light) Dataset                   21.51 dB
-Custom Augmented Dataset                  19.00 dB
+Evaluation Dataset Split                  Achieved Performance (PSNR)
+LOL (Low-Light) Dataset                   21+ dB
+Custom Augmented Dataset                  19+ dB
 
 ```
 
 
 ## 🗺 Future Roadmap
-* [ ] Integrate TensorRT execution providers for real-time edge streaming inference.
-* [ ] Implement zero-shot self-supervised training modules to eliminate reliance on paired datasets.
+* [ ] Integrate it with an android app.
