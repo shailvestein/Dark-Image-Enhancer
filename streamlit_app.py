@@ -71,12 +71,17 @@ if uploaded_file is not None:
     
         with st.status("🚀 AI Engine is working...", expanded=True) as status:
             enhancer = get_enhancer()
-            # Thread Lock का इस्तेमाल करके मल्टिपल डिवाइस एरर को फिक्स किया
             with st.session_state.lock:
                 enhc_img, p_time = enhancer.enhance_image(img_input)
             status.update(label=f"✨ Magic Done in {p_time:.2f}s!", state="complete", expanded=False)
     
-        # Slider View के लिए कंपोनेंट रेंडर करें
+        # यदि मॉडल आउटपुट 0-1 रेंज में है, तो उसे 255 से गुणा करके uint8 में बदलें ताकि वह सही दिखे
+        if enhc_img.dtype != np.uint8:
+            if np.max(enhc_img) <= 1.0:
+                enhc_img = (enhc_img * 255).astype(np.uint8)
+            else:
+                enhc_img = enhc_img.astype(np.uint8)
+
         orig_rgb = cv2.cvtColor(img_input, cv2.COLOR_BGR2RGB)
         enhc_rgb = cv2.cvtColor(enhc_img, cv2.COLOR_BGR2RGB)
         
