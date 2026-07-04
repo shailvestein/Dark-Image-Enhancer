@@ -4,7 +4,7 @@
 
 Here is a side-by-side comparison of the low-light input processed through our pipeline versus the ground truth:
 
-| Input Image (Low-Light) | DeepSense AI Enhanced Output |
+| Input Image (Low-Light) | Enhanced Output (Bright-Light) |
 | :---: | :---: |
 | ![Dark Input](./data/669.png) | ![Enhanced Output](./data/enhanced.png) |
 
