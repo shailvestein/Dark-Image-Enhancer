@@ -7,6 +7,8 @@ from Enhancer import Enhancer
 import torch
 import threading
 from streamlit_image_comparison import image_comparison
+import sys
+import os
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024
