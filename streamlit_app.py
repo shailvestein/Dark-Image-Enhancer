@@ -70,6 +70,7 @@ if uploaded_file is not None:
         file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
         img_input = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
         img_input = resize_if_needed(img_input)
+        img_input = cv2.cvtColor(img_input, cv2.COLOR_BGR2RGB)
     
         with st.status("🚀 AI Engine is working...", expanded=True) as status:
             enhancer = get_enhancer()
@@ -88,8 +89,8 @@ if uploaded_file is not None:
         # enhc_rgb = cv2.cvtColor(enhc_img, cv2.COLOR_BGR2RGB)
         
         image_comparison(
-            img1=orig_rgb,
-            img2=enhc_rgb,
+            img1=img_input,
+            img2=enhc_img,
             label1="Original",
             label2="Enhanced",
             starting_position=50,
