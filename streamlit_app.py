@@ -1,15 +1,19 @@
 import streamlit as st
 import cv2
 import numpy as np
-import io
 import gc
 from Models import load_weights
 from Enhancer import Enhancer
 import torch
+import threading
+from streamlit_image_comparison import image_comparison
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024
 MAX_W, MAX_H = 1920, 1080
+
+if 'lock' not in st.session_state:
+    st.session_state.lock = threading.Lock()
 
 st.set_page_config(layout="wide", page_title="AI image light restoration Lab", page_icon="✨")
 
@@ -67,16 +71,25 @@ if uploaded_file is not None:
     
         with st.status("🚀 AI Engine is working...", expanded=True) as status:
             enhancer = get_enhancer()
-            enhc_img, p_time = enhancer.enhance_image(img_input)
+            # Thread Lock का इस्तेमाल करके मल्टिपल डिवाइस एरर को फिक्स किया
+            with st.session_state.lock:
+                enhc_img, p_time = enhancer.enhance_image(img_input)
             status.update(label=f"✨ Magic Done in {p_time:.2f}s!", state="complete", expanded=False)
     
-        col1, col2 = st.columns(2)
-        with col1:
-            st.markdown("<h4 style='text-align: center;'>🌑 Original</h4>", unsafe_allow_html=True)
-            st.image(cv2.cvtColor(img_input, cv2.COLOR_BGR2RGB), use_container_width=True)
-        with col2:
-            st.markdown("<h4 style='text-align: center; color: #00d4ff;'>🌟 Enhanced</h4>", unsafe_allow_html=True)
-            st.image(cv2.cvtColor(enhc_img, cv2.COLOR_BGR2RGB), use_container_width=True)
+        # Slider View के लिए कंपोनेंट रेंडर करें
+        orig_rgb = cv2.cvtColor(img_input, cv2.COLOR_BGR2RGB)
+        enhc_rgb = cv2.cvtColor(enhc_img, cv2.COLOR_BGR2RGB)
+        
+        image_comparison(
+            img1=orig_rgb,
+            img2=enhc_rgb,
+            label1="Original",
+            label2="Enhanced",
+            starting_position=50,
+            show_labels=True,
+            make_responsive=True,
+            in_memory=True
+        )
 
 st.divider()
 c1, c2, _ = st.columns([1, 1, 1])
