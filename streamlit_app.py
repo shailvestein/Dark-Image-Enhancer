@@ -13,7 +13,6 @@ import threading
 import time
 from streamlit_image_comparison import image_comparison
 
-# ── 1. GLOBAL RESOURCE MANAGEMENT (Shared across all users) ──
 @st.cache_resource
 def get_global_ai_resources():
     """
@@ -22,7 +21,7 @@ def get_global_ai_resources():
     return {
         "lock": threading.Lock(),
         "counter_lock": threading.Lock(),
-        "waiting_users": 0  # कतार में कुल एक्टिव यूज़र्स की संख्या
+        "waiting_users": 0
     }
 
 AI_RESOURCES = get_global_ai_resources()
@@ -82,21 +81,18 @@ enhc_img = None
 
 if uploaded_file is not None:
     if uploaded_file.size > MAX_FILE_SIZE_BYTES:
-        st.error(f"❌ फाइल बहुत बड़ी है! कृपया 10MB से छोटी इमेज अपलोड करें। (आपकी फाइल: {uploaded_file.size / (1024*1024):.2f} MB)")
+        st.error(f"❌ Image is too large! Upload image file less than 10MB। (Your image size: {uploaded_file.size / (1024*1024):.2f} MB)")
     else:
         file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
         img_input = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
         img_input = resize_if_needed(img_input)
         
         status_placeholder = st.empty()
-        
-        # ── 2. QUEUE POSITION ALLOCATION ──
-        # थ्रेड-सेफ तरीके से ग्लोबल काउंटर को बढ़ाएं और इस यूजर को उसका नंबर अलॉट करें
+
         with COUNTER_LOCK:
             AI_RESOURCES["waiting_users"] += 1
             my_initial_position = AI_RESOURCES["waiting_users"]
 
-        # शुरुआती स्टेटस रेंडर करें
         if my_initial_position > 1:
             status_text = f"⏳ Your Position in Queue: #{my_initial_position - 1} | Processing will start shortly..."
         else:
@@ -105,26 +101,21 @@ if uploaded_file is not None:
         with status_placeholder.status(status_text, expanded=True) as status:
             enhancer = get_enhancer()
             
-            # ── 3. DYNAMIC POSITION WAITING LOOP ──
-            # जब तक मेन लॉक नहीं मिल जाता, तब तक यूजर को उसकी लाइव पोजीशन स्क्रीन पर दिखती रहेगी
+ी
             acquired = False
             while not acquired:
-                # 0.1 सेकंड के लिए लॉक चेक करें (नॉन-ब्लॉकिंग वेट)
                 acquired = GLOBAL_AI_LOCK.acquire(blocking=False)
                 if not acquired:
-                    # यदि लॉक नहीं मिला, तो वर्तमान में लाइन में खड़े लोगों के हिसाब से पोजीशन अपडेट करें
                     with COUNTER_LOCK:
                         current_queue_len = AI_RESOURCES["waiting_users"]
                     
-                    # स्क्रीन पर लाइव पोजीशन अपडेट करें
                     if current_queue_len > 1:
                         status.update(label=f"⏳ Queue Position: #{current_queue_len - 1} | Please wait, another device is processing...", state="running")
                     else:
                         status.update(label="⏳ Preparing to launch your task...", state="running")
                         
-                    time.sleep(1) # सर्वर पर लोड कम करने के लिए 1 सेकंड का पॉज
+                    time.sleep(1) 
             
-            # ── 4. PROCESSING STAGE (Lock Acquired) ──
             status.update(label="🚀 Lock Acquired! AI Engine is transforming your image...", state="running")
             try:
                 enhc_img, p_time = enhancer.enhance_image(img_input)
@@ -132,13 +123,11 @@ if uploaded_file is not None:
                 st.error(f"❌ Processing Error: {str(e)}")
                 enhc_img = None
             finally:
-                # काम ख़त्म होने के बाद लॉक रिलीज करें और ग्लोबल काउंटर में से खुद को घटाएं
                 GLOBAL_AI_LOCK.release()
                 with COUNTER_LOCK:
                     if AI_RESOURCES["waiting_users"] > 0:
                         AI_RESOURCES["waiting_users"] -= 1
                 
-                # मेमोरी क्लियर करें
                 gc.collect()
                 if torch.cuda.is_available():
                     torch.cuda.empty_cache()
