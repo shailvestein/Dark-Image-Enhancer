@@ -277,6 +277,6 @@ class RetinexFormer(nn.Module):
 def load_weights():    
     model = RetinexFormer()
     path = "./weights/"
-    model_name = "retinex-multihead-transformer (9).pth"
+    model_name = "retinex-multihead-transformer (6).pth"
     model.load_weights(os.path.join(path, model_name))
     return model
