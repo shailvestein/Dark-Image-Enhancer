@@ -111,13 +111,13 @@ if uploaded_file is not None:
                         current_queue_len = AI_RESOURCES["waiting_users"]
                     
                     if current_queue_len > 1:
-                        status.update(label=f"⏳ Queue Position: #{current_queue_len - 1} | Please wait, another device is processing...", state="running")
+                        status.update(label=f"⏳ Queue Position: #{current_queue_len - 1} | Please wait...", state="running")
                     else:
                         status.update(label="⏳ Preparing to launch your task...", state="running")
                         
                     time.sleep(1)
             
-            status.update(label="🚀 Lock Acquired! AI Engine is transforming your image...", state="running")
+            status.update(label="🚀 AI Engine is transforming your image...", state="running")
             try:
                 enhc_img, p_time = enhancer.enhance_image(img_input)
                 enhc_img = cv2.cvtColor(enhc_img, cv2.COLOR_BGR2RGB)
