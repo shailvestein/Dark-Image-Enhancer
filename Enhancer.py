@@ -88,4 +88,4 @@ class Enhancer:
                 enhanced_list.extend([p.cpu() for p in out])
                 
         output = self.combine_tensor_patches(enhanced_list, coords, (h, w), (nh, nw), patch_size)
-        return output time.time() - st
+        return output, time.time() - st
