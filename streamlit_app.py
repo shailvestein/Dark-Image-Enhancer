@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 import streamlit as st
 import cv2
 import numpy as np
@@ -6,16 +10,28 @@ from Models import load_weights
 from Enhancer import Enhancer
 import torch
 import threading
+import time
 from streamlit_image_comparison import image_comparison
-import sys
-import os
+
+# ── 1. GLOBAL RESOURCE MANAGEMENT (Shared across all users) ──
+@st.cache_resource
+def get_global_ai_resources():
+    """
+    एक ही बार इनिशियलाइज होगा और सभी डिवाइसेज के बीच शेयर रहेगा।
+    """
+    return {
+        "lock": threading.Lock(),
+        "counter_lock": threading.Lock(),
+        "waiting_users": 0  # कतार में कुल एक्टिव यूज़र्स की संख्या
+    }
+
+AI_RESOURCES = get_global_ai_resources()
+GLOBAL_AI_LOCK = AI_RESOURCES["lock"]
+COUNTER_LOCK = AI_RESOURCES["counter_lock"]
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024
 MAX_W, MAX_H = 1920, 1080
-
-if 'lock' not in st.session_state:
-    st.session_state.lock = threading.Lock()
 
 st.set_page_config(layout="wide", page_title="AI image light restoration Lab", page_icon="✨")
 
@@ -52,7 +68,8 @@ def get_enhancer():
     return Enhancer(model, batch_size=2)
 
 def get_image_bytes(image_np):
-    success, encoded_img = cv2.imencode('.png', image_np)
+    bgr_img = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
+    success, encoded_img = cv2.imencode('.png', bgr_img)
     if success:
         return encoded_img.tobytes()
     return b""
@@ -70,35 +87,84 @@ if uploaded_file is not None:
         file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
         img_input = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
         img_input = resize_if_needed(img_input)
-        img_input = cv2.cvtColor(img_input, cv2.COLOR_BGR2RGB)
-    
-        with st.status("🚀 AI Engine is working...", expanded=True) as status:
-            enhancer = get_enhancer()
-            with st.session_state.lock:
-                enhc_img, p_time = enhancer.enhance_image(img_input)
-                enhc_img = cv2.cvtColor(enhc_img, cv2.COLOR_BGR2RGB)
-            status.update(label=f"✨ Magic Done in {p_time:.2f}s!", state="complete", expanded=False)
-    
-        # यदि मॉडल आउटपुट 0-1 रेंज में है, तो उसे 255 से गुणा करके uint8 में बदलें ताकि वह सही दिखे
-        if enhc_img.dtype != np.uint8:
-            if np.max(enhc_img) <= 1.0:
-                enhc_img = (enhc_img * 255).astype(np.uint8)
-            else:
-                enhc_img = enhc_img.astype(np.uint8)
-
-        # orig_rgb = cv2.cvtColor(img_input, cv2.COLOR_BGR2RGB)
-        # enhc_rgb = cv2.cvtColor(enhc_img, cv2.COLOR_BGR2RGB)
         
-        image_comparison(
-            img1=img_input,
-            img2=enhc_img,
-            label1="Original",
-            label2="Enhanced",
-            starting_position=50,
-            show_labels=True,
-            make_responsive=True,
-            in_memory=True
-        )
+        status_placeholder = st.empty()
+        
+        # ── 2. QUEUE POSITION ALLOCATION ──
+        # थ्रेड-सेफ तरीके से ग्लोबल काउंटर को बढ़ाएं और इस यूजर को उसका नंबर अलॉट करें
+        with COUNTER_LOCK:
+            AI_RESOURCES["waiting_users"] += 1
+            my_initial_position = AI_RESOURCES["waiting_users"]
+
+        # शुरुआती स्टेटस रेंडर करें
+        if my_initial_position > 1:
+            status_text = f"⏳ Your Position in Queue: #{my_initial_position - 1} | Processing will start shortly..."
+        else:
+            status_text = "🚀 You are next in line! Initializing AI Engine..."
+            
+        with status_placeholder.status(status_text, expanded=True) as status:
+            enhancer = get_enhancer()
+            
+            # ── 3. DYNAMIC POSITION WAITING LOOP ──
+            # जब तक मेन लॉक नहीं मिल जाता, तब तक यूजर को उसकी लाइव पोजीशन स्क्रीन पर दिखती रहेगी
+            acquired = False
+            while not acquired:
+                # 0.1 सेकंड के लिए लॉक चेक करें (नॉन-ब्लॉकिंग वेट)
+                acquired = GLOBAL_AI_LOCK.acquire(blocking=False)
+                if not acquired:
+                    # यदि लॉक नहीं मिला, तो वर्तमान में लाइन में खड़े लोगों के हिसाब से पोजीशन अपडेट करें
+                    with COUNTER_LOCK:
+                        current_queue_len = AI_RESOURCES["waiting_users"]
+                    
+                    # स्क्रीन पर लाइव पोजीशन अपडेट करें
+                    if current_queue_len > 1:
+                        status.update(label=f"⏳ Queue Position: #{current_queue_len - 1} | Please wait, another device is processing...", state="running")
+                    else:
+                        status.update(label="⏳ Preparing to launch your task...", state="running")
+                        
+                    time.sleep(1) # सर्वर पर लोड कम करने के लिए 1 सेकंड का पॉज
+            
+            # ── 4. PROCESSING STAGE (Lock Acquired) ──
+            status.update(label="🚀 Lock Acquired! AI Engine is transforming your image...", state="running")
+            try:
+                enhc_img, p_time = enhancer.enhance_image(img_input)
+            except Exception as e:
+                st.error(f"❌ Processing Error: {str(e)}")
+                enhc_img = None
+            finally:
+                # काम ख़त्म होने के बाद लॉक रिलीज करें और ग्लोबल काउंटर में से खुद को घटाएं
+                GLOBAL_AI_LOCK.release()
+                with COUNTER_LOCK:
+                    if AI_RESOURCES["waiting_users"] > 0:
+                        AI_RESOURCES["waiting_users"] -= 1
+                
+                # मेमोरी क्लियर करें
+                gc.collect()
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
+            
+            if enhc_img is not None:
+                status.update(label=f"✨ Magic Done in {p_time:.2f}s!", state="complete", expanded=False)
+    
+        if enhc_img is not None:
+            if enhc_img.dtype != np.uint8:
+                if np.max(enhc_img) <= 1.0:
+                    enhc_img = (enhc_img * 255).astype(np.uint8)
+                else:
+                    enhc_img = enhc_img.astype(np.uint8)
+
+            orig_rgb = cv2.cvtColor(img_input, cv2.COLOR_BGR2RGB)
+            
+            image_comparison(
+                img1=orig_rgb,
+                img2=enhc_img,
+                label1="Original",
+                label2="Enhanced",
+                starting_position=50,
+                show_labels=True,
+                make_responsive=True,
+                in_memory=True
+            )
 
 st.divider()
 c1, c2, _ = st.columns([1, 1, 1])
@@ -121,7 +187,7 @@ st.markdown(
             <span style='color: #555;'>Have a suggestion? </span>
             <a href="mailto:shailvestein.careers@gmail.com?subject=Feedback for DeepSense AI Lab" 
                style="color: #00d4ff; text-decoration: none; font-weight: bold;">
-               📩 Contact Developer
+                📩 Contact Developer
             </a>
         </p>
         <p style='color: #00d4ff; font-weight: bold; font-size: 15px; margin-top: 10px;'>Powered by Shailesh Vishwakarma</p>
