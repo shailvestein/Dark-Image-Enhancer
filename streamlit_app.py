@@ -39,7 +39,7 @@ def resize_if_needed(img):
 try:
     display_image = cv2.imread("./data/ropeway-enh-img.jpg")
     if display_image is not None:
-        st.image(cv2.cvtColor(display_image, cv2.COLOR_BGR2RGB), use_container_width=True)
+        st.image(cv2.cvtColor(display_image, cv2.COLOR_BGR2RGB), width='stretch')
 except Exception:
     pass
 
