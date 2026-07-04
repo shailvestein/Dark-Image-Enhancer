@@ -1,6 +1,6 @@
 # High-Performance Low-Light Image Restoration via Retinex-Transformer Architectures
 
-[![Streamlit CloudApp]()](https://dark-image-enhancer.streamlit.app/)
+[![CloudApp]()](https://dark-image-enhancer.streamlit.app/)
 
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org/)
 [![OpenCV](https://img.shields.io/badge/OpenCV-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white)](https://opencv.org/)
