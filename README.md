@@ -48,10 +48,10 @@ The framework incorporates physical priors based on Retinex Theory paired with d
 ```
 
 📊 Performance Benchmarks & Evaluation
-
+```
 The model has been rigorously evaluated using structural and peak signal performance targets across standard benchmarks and mixed real-world distributions:
 Evaluation Dataset Split                Target Performance (PSNR)LOL (Low-Light)
 Dataset Baseline                        21.51 dB
 Custom Augmented Dataset                19.00 dB
 (LOL + SICE / RELINSR / Multi-Sensor Mix)
-
+```
