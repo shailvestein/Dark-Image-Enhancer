@@ -2,6 +2,10 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning, module="streamlit")
+warnings.filterwarnings("ignore", message=".*st.components.v1.html.*")
+
 import streamlit as st
 import cv2
 import numpy as np
@@ -15,9 +19,6 @@ from streamlit_image_comparison import image_comparison
 
 @st.cache_resource
 def get_global_ai_resources():
-    """
-    एक ही बार इनिशियलाइज होगा और सभी डिवाइसेज के बीच शेयर रहेगा।
-    """
     return {
         "lock": threading.Lock(),
         "counter_lock": threading.Lock(),
@@ -81,14 +82,15 @@ enhc_img = None
 
 if uploaded_file is not None:
     if uploaded_file.size > MAX_FILE_SIZE_BYTES:
-        st.error(f"❌ Image is too large! Upload image file less than 10MB। (Your image size: {uploaded_file.size / (1024*1024):.2f} MB)")
+        st.error(f"❌ File is too large! Please upload an image smaller than 10MB. (Your file: {uploaded_file.size / (1024*1024):.2f} MB)")
     else:
         file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
         img_input = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
         img_input = resize_if_needed(img_input)
+        img_input = cv2.cvtColor(img_input, cv2.COLOR_BGR2RGB)
         
         status_placeholder = st.empty()
-
+        
         with COUNTER_LOCK:
             AI_RESOURCES["waiting_users"] += 1
             my_initial_position = AI_RESOURCES["waiting_users"]
@@ -100,6 +102,7 @@ if uploaded_file is not None:
             
         with status_placeholder.status(status_text, expanded=True) as status:
             enhancer = get_enhancer()
+            
             acquired = False
             while not acquired:
                 acquired = GLOBAL_AI_LOCK.acquire(blocking=False)
@@ -112,11 +115,12 @@ if uploaded_file is not None:
                     else:
                         status.update(label="⏳ Preparing to launch your task...", state="running")
                         
-                    time.sleep(1) 
+                    time.sleep(1)
             
             status.update(label="🚀 Lock Acquired! AI Engine is transforming your image...", state="running")
             try:
                 enhc_img, p_time = enhancer.enhance_image(img_input)
+                enhc_img = cv2.cvtColor(enhc_img, cv2.COLOR_BGR2RGB)
             except Exception as e:
                 st.error(f"❌ Processing Error: {str(e)}")
                 enhc_img = None
@@ -139,11 +143,9 @@ if uploaded_file is not None:
                     enhc_img = (enhc_img * 255).astype(np.uint8)
                 else:
                     enhc_img = enhc_img.astype(np.uint8)
-
-            orig_rgb = cv2.cvtColor(img_input, cv2.COLOR_BGR2RGB)
             
             image_comparison(
-                img1=orig_rgb,
+                img1=img_input,
                 img2=enhc_img,
                 label1="Original",
                 label2="Enhanced",
