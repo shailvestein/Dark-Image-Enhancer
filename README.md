@@ -6,7 +6,7 @@ Visit: [![Streamlit CloudApp]()](https://dark-image-enhancer.streamlit.app/)
 [![OpenCV](https://img.shields.io/badge/OpenCV-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white)](https://opencv.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io/)
 
-DeepSense AI is a state-of-the-art computer vision pipeline engineered to restore high-quality imagery from extremely low-light environments. This framework implements a hybrid approach, seamlessly uniting robust **OpenCV (cv2)** image preprocessing workflows with a customized **RetinexFormer** neural network architecture.
+Dark image enhancer is a state-of-the-art computer vision pipeline engineered to restore high-quality imagery from extremely low-light environments. This framework implements a hybrid approach, seamlessly uniting robust **OpenCV (cv2)** image preprocessing workflows with a customized **RetinexFormer** neural network architecture.
 
 ---
 
@@ -54,7 +54,7 @@ The framework incorporates physical priors based on Retinex Theory paired with d
 The model has been rigorously evaluated using structural and peak signal performance targets across standard benchmarks and mixed real-world distributions:
 ```
 Evaluation Dataset Split                  Target Performance (PSNR)LOL (Low-Light)
-Dataset Baseline                          21.51 dB
+Dataset LOL                               21.51 dB
 Custom Augmented Dataset                  19.00 dB
-(LOL + SICE)
+
 ```
