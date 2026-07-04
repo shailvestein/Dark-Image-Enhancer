@@ -6,7 +6,7 @@ Here is a side-by-side comparison of the low-light input processed through our p
 
 | Input Image (Low-Light) | DeepSense AI Enhanced Output |
 | :---: | :---: |
-| ![Dark Input](documents/sample_dark.png) | ![Enhanced Output](enhanced_image.png) |
+| ![Dark Input](./data/669.png) | ![Enhanced Output](./data/enhanced.png) |
 
 Visit: [![Streamlit CloudApp]()](https://dark-image-enhancer.streamlit.app/)
 
