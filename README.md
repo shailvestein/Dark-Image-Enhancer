@@ -1,12 +1,20 @@
 # High-Performance Low-Light Image Restoration via Retinex-Transformer Architectures
 
+## 🖼 Visual Results
+
+Here is a side-by-side comparison of the low-light input processed through our pipeline versus the ground truth:
+
+| Input Image (Low-Light) | DeepSense AI Enhanced Output |
+| :---: | :---: |
+| ![Dark Input](documents/sample_dark.png) | ![Enhanced Output](enhanced_image.png) |
+
 Visit: [![Streamlit CloudApp]()](https://dark-image-enhancer.streamlit.app/)
 
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org/)
 [![OpenCV](https://img.shields.io/badge/OpenCV-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white)](https://opencv.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io/)
 
-Dark image enhancer is a state-of-the-art computer vision pipeline engineered to restore high-quality imagery from extremely low-light environments. This framework implements a hybrid approach, seamlessly uniting robust **OpenCV (cv2)** image preprocessing workflows with a customized **RetinexFormer** neural network architecture.
+Low light image enhancer is a state-of-the-art computer vision pipeline engineered to restore high-quality imagery from extremely low-light environments. This framework implements a hybrid approach, seamlessly uniting robust **OpenCV (cv2)** image preprocessing workflows with a customized **RetinexFormer** neural network architecture.
 
 ---
 
@@ -49,6 +57,10 @@ The framework incorporates physical priors based on Retinex Theory paired with d
                         Restored Image Output (cv2 Frame)
 ```
 
+### 4. Loss Formulations
+The network is optimized using a joint loss function to guarantee both structural fidelity and exposure naturalness:
+$$\mathcal{Loss} = \mathcal{L}_{1}
+
 📊 Performance Benchmarks & Evaluation
 
 The model has been rigorously evaluated using structural and peak signal performance targets across standard benchmarks and mixed real-world distributions:
@@ -58,3 +70,8 @@ LOL (Low-Light) Dataset                   21.51 dB
 Custom Augmented Dataset                  19.00 dB
 
 ```
+
+
+## 🗺 Future Roadmap
+* [ ] Integrate TensorRT execution providers for real-time edge streaming inference.
+* [ ] Implement zero-shot self-supervised training modules to eliminate reliance on paired datasets.
