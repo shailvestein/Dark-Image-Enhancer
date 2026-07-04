@@ -76,6 +76,7 @@ if uploaded_file is not None:
             enhancer = get_enhancer()
             with st.session_state.lock:
                 enhc_img, p_time = enhancer.enhance_image(img_input)
+                enhc_img = cv2.cvtColor(enhc_img, cv2.COLOR_BGR2RGB)
             status.update(label=f"✨ Magic Done in {p_time:.2f}s!", state="complete", expanded=False)
     
         # यदि मॉडल आउटपुट 0-1 रेंज में है, तो उसे 255 से गुणा करके uint8 में बदलें ताकि वह सही दिखे
