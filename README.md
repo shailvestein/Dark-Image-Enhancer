@@ -1,6 +1,6 @@
-# High-Performance Low-Light Image Restoration via Retinex-Transformer Architectures
+# Low-Light Image Restoration via Retinex-Transformer Architectures
 
-## 🖼 Visual Results
+## Visual Results
 
 Here is a side-by-side comparison of the low-light input processed through our pipeline versus the ground truth:
 
@@ -18,7 +18,7 @@ Low light image enhancer is a state-of-the-art computer vision pipeline engineer
 
 ---
 
-## 🏗 Model Architecture Specifications
+## Model Architecture Specifications
 
 The framework incorporates physical priors based on Retinex Theory paired with deep learning transformer architectures for pixel-level feature restoration. The complete system design is detailed below:
 
