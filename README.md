@@ -37,7 +37,7 @@ The framework incorporates physical priors based on Retinex Theory paired with d
 * **Skip Connections:** Implements symmetric skip connections to preserve high-frequency spatial features and localized pixel context across deep layers.
 
 ```text
-       Input Image Matrix (cv2 Array)
+       Input Image Matrix
                     │
                     ├───► [ Illumination Estimator ] ───► Illumination Map
                     │                │                            │
