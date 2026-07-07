@@ -58,7 +58,7 @@ The framework incorporates physical priors based on Retinex Theory paired with d
 ```
 
 ### 4. Loss Formulations
-The network is optimized using a L1 loss function similar to research paper.
+The network is optimized using a L1 loss function.
 
 ### 5. Performance Benchmarks & Evaluation
 
