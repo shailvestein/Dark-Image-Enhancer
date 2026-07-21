@@ -37,24 +37,7 @@ The framework incorporates physical priors based on Retinex Theory paired with d
 * **Skip Connections:** Implements symmetric skip connections to preserve high-frequency spatial features and localized pixel context across deep layers.
 
 ```text
-       Input Image Matrix
-                    │
-                    ├───► [ Illumination Estimator ] ───► Illumination Map
-                    │                │                            │
-                    ▼                ▼                            │
-         [ Feature Mapping ] ──► [ Retinex Fusion ]               │ (Attention Guidance)
-                                     │                            │
-                                     ▼                            ▼
-                      [ Symmetric U-Net Denoiser (IGAB Transformer Blocks) ]
-                                     │
-                                     ▼
-                        Residual Output Tensor Map
-                                     │
-                                     ▼
-                           [ Final Residual Addition ]
-                                     │
-                                     ▼
-                        Restored Image Output (cv2 Frame)
+
 ```
 
 ### 4. Loss Formulations
