@@ -1,4 +1,4 @@
-# Low-Light Image Restoration via Retinex-Transformer Architectures
+# Low-Light Image Restoration via Retinex-Transformer Architecture
 
 ## Visual Results
 
