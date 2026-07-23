@@ -120,7 +120,7 @@ if uploaded_file is not None:
             status.update(label="🚀 AI Engine is transforming your image...", state="running")
             try:
                 enhc_img, p_time = enhancer.enhance_image(img_input)
-                # enhc_img = cv2.cvtColor(enhc_img, cv2.COLOR_BGR2RGB)
+                enhc_img = cv2.cvtColor(enhc_img, cv2.COLOR_BGR2RGB)
             except Exception as e:
                 st.error(f"❌ Processing Error: {str(e)}")
                 enhc_img = None
