@@ -28,7 +28,7 @@ class IlluminationEstimator(nn.Module):
         return illu_fea, illu_map
 
 class IG_MSA(nn.Module):
-    def __init__(self, dim, dim_head=64, heads=8):
+    def __init__(self, dim, dim_head=64, heads=32):
         super().__init__()
         self.num_heads = heads
         self.dim_head = dim_head
@@ -107,7 +107,7 @@ class FeedForward(nn.Module):
 
 
 class IGAB(nn.Module):
-    def __init__(self, dim, dim_head=64, heads=8, num_blocks=2):
+    def __init__(self, dim, dim_head=64, heads=16, num_blocks=2):
         super().__init__()
         self.blocks = nn.ModuleList([])
         for _ in range(num_blocks):
@@ -207,7 +207,7 @@ class RetinexFormer(nn.Module):
 
     def forward(self, img):
         illu_fea, illu_map = self.estimator(img)
-        input_img = img * illu_map + img
+        input_img = img * illu_map
         output_img = self.denoiser(input_img, illu_fea)
         return output_img
 
