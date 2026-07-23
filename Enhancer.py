@@ -11,7 +11,7 @@ class Enhancer:
         self.model = model.to(self.device)
         self.batch_size = batch_size
     
-    def get_ultra_sharp_mask(self, patch_size, fade_width=64): # Increased fade_width
+    def get_ultra_sharp_mask(self, patch_size, fade_width=64):
         """
         Creates a very smooth 2D Cosine window. 
         Higher fade_width (64) ensures no sharp edges.
@@ -31,7 +31,7 @@ class Enhancer:
         canvas = torch.zeros((3, nh, nw), dtype=torch.float32)
         weight_sum = torch.zeros((1, nh, nw), dtype=torch.float32)
         
-        # 64 pixel ka smooth transition boundary
+        # 64 pixel smooth transition boundary
         mask = self.get_ultra_sharp_mask(patch_size, fade_width=64)
         
         for idx, (i, j) in enumerate(coords):
@@ -62,7 +62,7 @@ class Enhancer:
         stride = 256 # 50% overlap is crucial
         h, w, _ = img_rgb.shape
         
-        # Better padding logic
+        
         pad_h = (patch_size - h % stride) % stride + (patch_size - stride)
         pad_w = (patch_size - w % stride) % stride + (patch_size - stride)
         img_padded = cv2.copyMakeBorder(img_rgb, 0, pad_h, 0, pad_w, cv2.BORDER_REFLECT)
