@@ -49,7 +49,7 @@ The network is optimized using a L1 loss function.
 The model has been rigorously evaluated using PSNR (peak-signal-to-noise-ratio):
 ```
 Evaluation Dataset Split                  Achieved Performance (PSNR)
-LOL (Low-Light) Dataset                   21+ dB
+LOL (Low-Light) Dataset                   19+ dB
 Custom Dataset                            19+ dB
 ```
 
