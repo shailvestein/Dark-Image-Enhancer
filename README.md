@@ -43,7 +43,7 @@ The framework incorporates physical priors based on Retinex Theory paired with d
 ### 4. Loss Formulations
 The network is optimized using a L1 loss function.
 
-### 5. Performance Benchmarks & Evaluation
+# Performance Benchmarks & Evaluation
 
 The model has been rigorously evaluated using PSNR (peak-signal-to-noise-ratio):
 ```
