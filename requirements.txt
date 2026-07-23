@@ -10,7 +10,6 @@ streamlit-image-comparison==0.0.4
 # Computer Vision & Image Processing
 # Use headless to avoid libGL errors in Linux/Cloud environments
 opencv-python-headless==4.9.0.80
-Pillow==10.2.0
 kornia==0.7.2
 
 einops == 0.8.2
