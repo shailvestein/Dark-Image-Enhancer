@@ -53,11 +53,18 @@ LOL (Low-Light) Dataset                   19+ dB
 Custom Dataset                            19+ dB
 ```
 
-### PSNR Score on LOL validation data
+### 1. PSNR Score
 ![Dark Input](./data/LOL-val-data-psnr.jpg)
 
-### Sample outputs for validation data
+### 2. Sample outputs
 ![Dark Input](./data/LOL-val-data-snaps.jpg)
+
+### 1. PSNR Score on Custom validation data
+![Dark Input](./data/LOL-val-data-psnr.jpg)
+
+### 2. Sample outputs
+![Dark Input](./data/LOL-val-data-snaps.jpg)
+
 
 
 ## Future Roadmap
