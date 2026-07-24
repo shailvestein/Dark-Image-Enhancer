@@ -59,6 +59,39 @@ $$V_{\text{guided}} = V \odot \mathtt{illu\_fea}$$
 
 ---
 
+## ⚙️ Training Setup & Hyperparameters
+
+The model is trained end-to-end on paired low/high-light image datasets using patch-based spatial sampling and Cosine Annealing learning rate scheduling.
+
+| Parameter | Configuration |
+| :--- | :--- |
+| **Optimization Loss** | $L_1$ Smooth Mean Absolute Error (`nn.L1Loss`) |
+| **Optimizer** | AdamW (`lr = 2e-4`, $\beta_1=0.9$, $\beta_2=0.999$) |
+| **Learning Rate Scheduler** | CosineAnnealingLR (`T_max = 100,000`, `eta_min = 1e-4`) |
+| **Total Training Iterations** | 100,000 iterations |
+| **Patch / Crop Size** | $128 \times 128$ resolution patches |
+| **Batch Size** | 8 (Training) / 2 (Validation) |
+| **Gradient Clipping** | Max norm capped at $5.0$ |
+| **Dataset Resolution Handling** | $1 \times$ Patch extraction per image per step (`num_patches = 1`) |
+
+```python
+# Model Training Execution Snippet
+model = RetinexFormer()
+criterion = nn.L1Loss()
+optimizer = torch.optim.AdamW(model.parameters(), lr=2e-4, betas=(0.9, 0.999))
+scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=100000, eta_min=1e-4)
+
+model.fit(
+    loader=train_loader,
+    total_iterations=100000,
+    criterion=criterion,
+    optimizer=optimizer,
+    scheduler=scheduler,
+    save_path='/content/drive/MyDrive/Models/24-july-2026',
+    model_name='retinex-multihead-transformer.pth'
+)
+```
+
 ## 📊 Performance Benchmarks & Evaluation
 
 The network has been evaluated across standard low-light benchmarks using **PSNR (Peak Signal-to-Noise Ratio)**:
