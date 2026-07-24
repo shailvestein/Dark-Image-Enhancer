@@ -67,6 +67,8 @@ Custom Dataset                            16+ dB
 ![Dark Input](./data/darkface-data-snaps.jpg)
 ![Dark Input](./data/darkface-data-snaps-2.jpg)
 
+## Datasets
+1.  LOL-v1 [dataset](https://www.kaggle.com/datasets/shaileshhkumarr/lol-dataset)
 
 
 ## Future Roadmap
