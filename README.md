@@ -68,7 +68,9 @@ Custom Dataset                            16+ dB
 ![Dark Input](./data/darkface-data-snaps-2.jpg)
 
 ## Datasets
-1.  LOL-v1 [dataset](https://www.kaggle.com/datasets/shaileshhkumarr/lol-dataset)
+1.  LOL-v1 [dataset](https://www.kaggle.com/datasets/shaileshhkumarr/lol-dataset).
+2.  Custom dataset (merged multiple dataset like lol, rellinsur, etc.)[dataset](https://www.kaggle.com/datasets/shaileshhkumarr/llie-paired-image-datasets).
+3.  Dark face [dataset](https://www.kaggle.com/datasets/shaileshhkumarr/darkface-dataset) to validate model visually.
 
 
 ## Future Roadmap
