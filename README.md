@@ -44,7 +44,7 @@ The model pipeline consists of two primary modules: `IlluminationEstimator` and 
 
 ### 2. Illumination-Guided Multi-Head Self-Attention (IG-MSA)
 * **Value-Guided Modulation:** Unlike standard transformers, IG-MSA dynamically injects spatial lighting prior into the **Value ($V$)** matrix before dot-product attention calculation:
-  $$V\_{\text{guided}} = V \odot \text{illu\_fea}$$
+$$V_{\text{guided}} = V \odot \text{illu\_fea}$$
 * **Channel-wise Attention:** Attention matrices are computed along feature channels rather than spatial dimensions. This reduces computational complexity from quadratic $O(N^2)$ to linear $O(N)$, ensuring GPU-friendly memory consumption during high-resolution inference.
 * **Positional Encoding:** Employs depthwise $3 \times 3$ convolutions with GELU activation to embed spatial layout details into token features.
 
