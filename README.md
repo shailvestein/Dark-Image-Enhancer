@@ -9,7 +9,8 @@ Here is a side-by-side comparison of the low-light input processed through our p
 | ![Dark Input](./data/669.png) | ![Enhanced Output](./data/enhanced.png) |
 
 
-Visit: [![Streamlit CloudApp]()](https://dark-image-enhancer.streamlit.app/)
+## Streamlit cloud app
+visit by clicking [![Streamlit CloudApp]()](https://dark-image-enhancer.streamlit.app/)
 
 [![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org/)
 [![OpenCV](https://img.shields.io/badge/OpenCV-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white)](https://opencv.org/)
